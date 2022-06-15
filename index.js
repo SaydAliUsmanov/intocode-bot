@@ -11,8 +11,8 @@ app.use(require('./routes'));
 
 const connectAndStartServer = () => {
   try {
-    app.listen(4000, () => {
-      console.log('Успешно подключено к порту 4000!');
+    app.listen(process.env.PORT, () => {
+      console.log(`Успешно подключено к порту ${process.env.PORT}!`);
     });
   } catch (e) {
     console.log('Ошибка');
