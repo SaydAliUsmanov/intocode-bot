@@ -20,4 +20,3 @@ const connectAndStartServer = () => {
 };
 
 connectAndStartServer();
-
