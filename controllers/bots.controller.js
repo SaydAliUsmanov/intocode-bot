@@ -4,19 +4,27 @@ const bot = new TelegramApi(process.env.TOKEN, { polling: true });
 module.exports.botsController = {
   sendMessage: (req, res) => {
     try {
+      // Настройки для текста
+      const opts = {
+        parse_mode: 'Markdown',
+      };
       // Если произошел fork
       if (req.body.forkee) {
         bot.sendMessage(
           process.env.iqaChatId,
-          `${req.body.forkee.owner.login} сделал форк репозитория`
+          `⚠️_${req.body.forkee.owner.login} сделал форк репозитория_`,
+          opts
         );
         return res.json({ message: 'Успешно!' });
       }
-      // Если произошло слияние ветки с main
-      if (req.body.head_commit?.committer.name === 'GitHub') {
+      if (
+        req.body.pull_request.state === 'closed' &&
+        req.body.pull_request.merged_at
+      ) {
         bot.sendMessage(
           process.env.iqaChatId,
-          `Произошло слияние ветки с main`
+          `⚠️_Ветка «main» обновлена (слияние с «${req.body.pull_request.head.ref}»)_`,
+          opts
         );
         return res.json({ message: 'Успешно!' });
       }
@@ -24,7 +32,8 @@ module.exports.botsController = {
       if (req.body.action === 'opened') {
         bot.sendMessage(
           process.env.iqaChatId,
-          `${req.body.pull_request.user.login} => Отправил ПР`
+          `⚠️_${req.body.pull_request.user.login} открыл PR «${req.body.pull_request.title}»_`,
+          opts
         );
         return res.json({ message: 'Успешно!' });
       }
@@ -32,7 +41,8 @@ module.exports.botsController = {
       if (req.body.action === 'synchronize') {
         bot.sendMessage(
           process.env.iqaChatId,
-          `${req.body.pull_request.user.login} => Обновил ПР`
+          `⚠️_${req.body.pull_request.user.login} обновил PR «${req.body.pull_request.title}»_`,
+          opts
         );
         return res.json({ message: 'Успешно!' });
       }
