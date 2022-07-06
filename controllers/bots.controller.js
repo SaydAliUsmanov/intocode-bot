@@ -7,6 +7,7 @@ module.exports.botsController = {
       // Настройки для текста
       const opts = {
         parse_mode: 'Markdown',
+        disable_web_page_preview: true,
       };
       // Если произошел fork
       if (req.body.forkee) {
@@ -23,7 +24,7 @@ module.exports.botsController = {
       ) {
         bot.sendMessage(
           process.env.iqaChatId,
-          `⚠️_Ветка «main» обновлена (слияние с «${req.body.pull_request.head.ref}»)_`,
+          `⚠️_Ветка «main» обновлена (слияние с «${req.body.pull_request.head.ref}»)_\n\n[Открыть репозиторий](${req.body.pull_request.base.repo.html_url})`,
           opts
         );
         return res.json({ message: 'Успешно!' });
@@ -32,7 +33,7 @@ module.exports.botsController = {
       if (req.body.action === 'opened') {
         bot.sendMessage(
           process.env.iqaChatId,
-          `⚠️_${req.body.pull_request.user.login} открыл PR «${req.body.pull_request.title}»_`,
+          `⚠️_${req.body.pull_request.user.login} открыл PR_ «[${req.body.pull_request.title}](${req.body.pull_request.html_url})»`,
           opts
         );
         return res.json({ message: 'Успешно!' });
@@ -41,7 +42,7 @@ module.exports.botsController = {
       if (req.body.action === 'synchronize') {
         bot.sendMessage(
           process.env.iqaChatId,
-          `⚠️_${req.body.pull_request.user.login} обновил PR «${req.body.pull_request.title}»_`,
+          `⚠️_${req.body.pull_request.user.login} обновил PR_ «[${req.body.pull_request.title}](${req.body.pull_request.html_url})»`,
           opts
         );
         return res.json({ message: 'Успешно!' });
